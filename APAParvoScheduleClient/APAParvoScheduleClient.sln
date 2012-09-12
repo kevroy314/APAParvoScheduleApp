@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APAParvoScheduleClient", "APAParvoScheduleClient\APAParvoScheduleClient.csproj", "{A3009E5F-8DFD-4010-9D8C-E12AFCFE4881}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APAParvoScheduleClient.Web", "APAParvoScheduleClient.Web\APAParvoScheduleClient.Web.csproj", "{754E82DE-BE12-452B-91F7-CEA65B206AC8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A3009E5F-8DFD-4010-9D8C-E12AFCFE4881}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3009E5F-8DFD-4010-9D8C-E12AFCFE4881}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3009E5F-8DFD-4010-9D8C-E12AFCFE4881}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3009E5F-8DFD-4010-9D8C-E12AFCFE4881}.Release|Any CPU.Build.0 = Release|Any CPU
+		{754E82DE-BE12-452B-91F7-CEA65B206AC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{754E82DE-BE12-452B-91F7-CEA65B206AC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{754E82DE-BE12-452B-91F7-CEA65B206AC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{754E82DE-BE12-452B-91F7-CEA65B206AC8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
