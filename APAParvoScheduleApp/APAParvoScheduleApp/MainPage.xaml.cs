@@ -9,131 +9,77 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Windows.Media.Imaging;
+using System.Windows.Controls.Primitives;
 
 namespace APAParvoScheduleApp
 {
     public partial class MainPage : UserControl
     {
-        private SolidColorBrush selectStrokeBrush;
-        private SolidColorBrush unselectStrokeBrush;
-        private Point mouseDownGridPoint;
-        private List<Tuple<int, int, int[]>> schedule;
-        
+        private int[,] buttonValues;
+        private bool[,] lockValues;
+
+        private const int scaleMax = 7;
+        private const int scaleMin = 0;
+        private const int numDaysInWeek = 7;
+
+        private DateTime weeksStart;
+        private const int numDisplayWeeks = 6;
+
+        private Popup instructionsPopup;
+
         public MainPage()
         {
             InitializeComponent();
+
+            weeksStart = getLastMonday();
+
+            todaysDateLabel.Content = "Todays Date is " + DateTime.Now.ToShortDateString();
+
+            populateWeekList();
+
+            buttonValues = DatabaseInterface.getValueArray(numDisplayWeeks, numDaysInWeek);
+            lockValues = DatabaseInterface.getLockArray(numDisplayWeeks, numDaysInWeek);
+
+            updateAllButtonColors(buttonValues);
+
+            updateScheduleButton.Click+=new RoutedEventHandler(updateScheduleButton_Click);
+            instructionsButton.Click+=new RoutedEventHandler(instructionsButton_Click);
+            weekListComboBox.SelectionChanged+=new SelectionChangedEventHandler(weekListComboBox_SelectionChanged);
+        }
+
+        private void populateWeekList()
+        {
+            for (int i = 0; i < numDisplayWeeks; i++)
+                weekListComboBox.Items.Add(weeksStart.AddDays(numDaysInWeek * i).ToShortDateString() + " - " + weeksStart.AddDays(numDaysInWeek * i + numDaysInWeek - 1).ToShortDateString());
+            weekListComboBox.SelectedIndex = 0;
+        }
+
+        private DateTime getLastMonday()
+        {
+            return new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day - (int)DateTime.Now.DayOfWeek + 1);
+        }
+
+        private void updateAllButtonColors(int[,] values)
+        {
             for (int i = 0; i < scheduleNeedsGrid.Children.Count; i++)
             {
-                ((Rectangle)scheduleNeedsGrid.Children[i]).MouseLeftButtonDown += new MouseButtonEventHandler(scheduleNeedsGrid_MouseLeftButtonDown);
-                ((Rectangle)scheduleNeedsGrid.Children[i]).MouseLeftButtonUp += new MouseButtonEventHandler(scheduleNeedsGrid_MouseLeftButtonUp);
-                ((Rectangle)scheduleNeedsGrid.Children[i]).MouseEnter += new MouseEventHandler(scheduleNeedsGrid_MouseEnter);
-                ((Rectangle)scheduleNeedsGrid.Children[i]).MouseLeave += new MouseEventHandler(scheduleNeedsGrid_MouseLeave);
-            }
-            selectStrokeBrush = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-            unselectStrokeBrush = new SolidColorBrush(Color.FromArgb(255, 128, 128, 128));
-            calendar.DisplayDateChanged += new EventHandler<CalendarDateChangedEventArgs>(calendar_DisplayDateChanged);
-            this.Loaded += new RoutedEventHandler(MainPage_Loaded);
-        }
-
-        void scheduleNeedsGrid_MouseLeave(object sender, MouseEventArgs e)
-        {
-            scheduleGridPopup.IsOpen = false;
-        }
-
-        void scheduleNeedsGrid_MouseEnter(object sender, MouseEventArgs e)
-        {
-            Point mousePos = e.GetPosition(null);
-            scheduleGridPopup.HorizontalOffset = mousePos.X;
-            scheduleGridPopup.VerticalOffset = mousePos.Y;
-            scheduleGridPopup.IsOpen = true;
-        }
-
-        void scheduleNeedsGrid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            int row = (int)((Rectangle)sender).GetValue(Grid.RowProperty);
-            int col = (int)((Rectangle)sender).GetValue(Grid.ColumnProperty);
-            if (mouseDownGridPoint.X == row && mouseDownGridPoint.Y == col)
-            {
-                DateTime selectedDate = gridIndexToDate(col + row * 7);
-                if (selectedDate.Month != calendar.DisplayDate.Month)
-                    calendar.DisplayDate = selectedDate;
-                else
+                if (scheduleNeedsGrid.Children[i].GetType() == typeof(DarkerButton))
                 {
-                    calendar.SelectedDate = selectedDate;
-                    calendar.SelectedDates.Clear();
-                    calendar.SelectedDates.Add(selectedDate);
+                    Button currentButton = (Button)scheduleNeedsGrid.Children[i];
+                    int column = (int)currentButton.GetValue(Grid.ColumnProperty);
+                    if (column >= 0 && column < numDaysInWeek)
+                    {
+                        currentButton.Background = new SolidColorBrush(getHeatMapColor(values[weekListComboBox.SelectedIndex, i], scaleMin, scaleMax));
+                        currentButton.ApplyTemplate();
+                    }
+                    if (DateTime.Now > weeksStart.AddDays(weekListComboBox.SelectedIndex * numDaysInWeek + i) || lockValues[weekListComboBox.SelectedIndex, i])
+                    {
+                        ((StackPanel)currentButton.Content).Visibility = System.Windows.Visibility.Visible;
+                        currentButton.IsEnabled = false;
+                    }
                 }
             }
-        }
-
-        void scheduleNeedsGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            int row = (int)((Rectangle)sender).GetValue(Grid.RowProperty);
-            int col = (int)((Rectangle)sender).GetValue(Grid.ColumnProperty);
-            mouseDownGridPoint = new Point(row, col);
-        }
-
-        void MainPage_Loaded(object sender, RoutedEventArgs e)
-        {
-            loadMonthData(new int[] { 1, 2, 3, 4, 5, 6, 7, 
-                                      4, 5, 6, 2, 1, 0, 1, 
-                                      3, 0, 9, 3, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 
-                                      0, 0}, new DateTime(calendar.DisplayDate.Year, calendar.DisplayDate.Month, 1));
-        }
-
-        void calendar_DisplayDateChanged(object sender, CalendarDateChangedEventArgs e)
-        {
-            for (int i = 0; i < scheduleNeedsGrid.Children.Count; i++)
-                ((Rectangle)scheduleNeedsGrid.Children[i]).Fill = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-        }
-
-        private void calendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count > 0)
-            {
-                Calendar senderCalendar = (Calendar)sender;
-                DateTime? selectedDate = (DateTime)e.AddedItems[0];
-                SolidColorBrush currentBrush = (SolidColorBrush)((Rectangle)scheduleNeedsGrid.Children[dateToGridIndex(selectedDate.Value)]).Fill;
-                SolidColorBrush newBrush = new SolidColorBrush(Color.FromArgb(255, currentBrush.Color.R, currentBrush.Color.G, currentBrush.Color.B));
-                ((Rectangle)scheduleNeedsGrid.Children[dateToGridIndex(selectedDate.Value)]).Fill = newBrush;
-                ((Rectangle)scheduleNeedsGrid.Children[dateToGridIndex(selectedDate.Value)]).Stroke = selectStrokeBrush;
-            }
-            if (e.RemovedItems.Count > 0)
-            {
-                Calendar senderCalendar = (Calendar)sender;
-                DateTime? selectedDate = (DateTime)e.RemovedItems[0];
-                SolidColorBrush currentBrush = (SolidColorBrush)((Rectangle)scheduleNeedsGrid.Children[dateToGridIndex(selectedDate.Value)]).Fill;
-                SolidColorBrush newBrush = new SolidColorBrush(Color.FromArgb(128, currentBrush.Color.R, currentBrush.Color.G, currentBrush.Color.B));
-                ((Rectangle)scheduleNeedsGrid.Children[dateToGridIndex(selectedDate.Value)]).Fill = newBrush;
-                ((Rectangle)scheduleNeedsGrid.Children[dateToGridIndex(selectedDate.Value)]).Stroke = unselectStrokeBrush;
-            }
-        }
-
-        private DateTime gridIndexToDate(int gridIndex)
-        {
-            DateTime firstDateOfMonth = new DateTime(calendar.DisplayDate.Year, calendar.DisplayDate.Month, 1);
-            int addDays = gridIndex - (int)firstDateOfMonth.DayOfWeek;
-            if (firstDateOfMonth.DayOfWeek == DayOfWeek.Sunday)
-                addDays -= 7;
-            return firstDateOfMonth.AddDays(addDays);
-        }
-
-        private int dateToGridIndex(DateTime date)
-        {
-            DateTime firstDateOfMonth = new DateTime(date.Year, date.Month, 1);
-            double firstDayOffset = 8 - (double)firstDateOfMonth.DayOfWeek;
-            int col = (int)date.DayOfWeek;
-            int row = (int)Math.Floor(((double)date.Day - firstDayOffset) / 7.0) + 2;
-            if (firstDateOfMonth.DayOfWeek == DayOfWeek.Sunday)
-                row++;
-            return col + row * 7;
-        }
-
-        private void loadMonthData(int[] dayValues, DateTime startDate)
-        {
-            for (int i = 0; i < dayValues.Length; i++)
-                ((Rectangle)scheduleNeedsGrid.Children[dateToGridIndex(startDate.AddDays(i))]).Fill = new SolidColorBrush(getHeatMapColor(dayValues[i], 0, 5));
         }
 
         private Color getHeatMapColor(double v, double vmin, double vmax)
@@ -176,6 +122,38 @@ namespace APAParvoScheduleApp
             byte bbyte = (byte)(255f * b);
 
             return Color.FromArgb(128, rbyte, gbyte, bbyte);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            int column = (int)((Button)sender).GetValue(Grid.ColumnProperty);
+            buttonValues[weekListComboBox.SelectedIndex, column]++;
+            buttonValues[weekListComboBox.SelectedIndex, column] %= scaleMax;
+            updateAllButtonColors(buttonValues);
+        }
+
+        private void updateScheduleButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void weekListComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            updateAllButtonColors(buttonValues);
+        }
+        
+        private void instructionsButton_Click(object sender, RoutedEventArgs e)
+        {
+            instructionsPopup = new Popup();
+            instructionsPopup.VerticalOffset = 50;
+            instructionsPopup.HorizontalOffset = 50;
+            instructionsPopup.IsOpen = true;
+            Grid childGrid = new Grid();
+            childGrid.RowDefinitions.Add(new RowDefinition());
+            childGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            childGrid.Width = 100;
+            childGrid.Height = 100;
+            instructionsPopup.Child = childGrid;
         }
     }
 }
