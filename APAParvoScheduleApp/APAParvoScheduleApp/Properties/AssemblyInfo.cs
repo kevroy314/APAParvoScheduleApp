@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("APAParvoScheduleClient.Web")]
+[assembly: AssemblyTitle("APAParvoScheduleApp")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("APAParvoScheduleClient.Web")]
+[assembly: AssemblyProduct("APAParvoScheduleApp")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("23c311fa-b06c-4ce1-96d2-f52f7cfd28b1")]
+[assembly: Guid("02c811a9-94b7-4573-9239-009057f9105a")]
 
 // Version information for an assembly consists of the following four values:
 //

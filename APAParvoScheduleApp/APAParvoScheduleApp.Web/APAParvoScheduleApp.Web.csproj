@@ -6,14 +6,15 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{754E82DE-BE12-452B-91F7-CEA65B206AC8}</ProjectGuid>
+    <ProjectGuid>{4B54C077-BF48-4F44-9FFA-B2323BC3789E}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>APAParvoScheduleClient.Web</RootNamespace>
-    <AssemblyName>APAParvoScheduleClient.Web</AssemblyName>
+    <RootNamespace>APAParvoScheduleApp.Web</RootNamespace>
+    <AssemblyName>APAParvoScheduleApp.Web</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <SilverlightApplicationList>{A3009E5F-8DFD-4010-9D8C-E12AFCFE4881}|..\APAParvoScheduleClient\APAParvoScheduleClient.csproj|ClientBin|False</SilverlightApplicationList>
+    <UseIISExpress>false</UseIISExpress>
+    <SilverlightApplicationList>{108F2404-EB28-4106-BF4B-A255A931C1C3}|..\APAParvoScheduleApp\APAParvoScheduleApp.csproj|ClientBin|False</SilverlightApplicationList>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -51,9 +52,10 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="APAParvoScheduleClientTestPage.aspx" />
-    <Content Include="APAParvoScheduleClientTestPage.html" />
+    <Content Include="ClientBin\APAParvoScheduleApp.xap" />
     <Content Include="Silverlight.js" />
+    <Content Include="APAParvoScheduleAppTestPage.aspx" />
+    <Content Include="APAParvoScheduleAppTestPage.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -65,9 +67,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ClientBin\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>
@@ -76,7 +76,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>54322</DevelopmentServerPort>
+          <DevelopmentServerPort>61592</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
