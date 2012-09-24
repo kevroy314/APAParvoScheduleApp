@@ -26,11 +26,14 @@ namespace APAParvoScheduleApp
         private DateTime weeksStart;
         private const int numDisplayWeeks = 6;
 
-        private Popup instructionsPopup;
+        private InstructionsWindow instructions;
+        private Notifier updateCompleteNotifier;
 
         public MainPage()
         {
             InitializeComponent();
+
+            instructions = new InstructionsWindow();
 
             weeksStart = getLastMonday();
 
@@ -134,7 +137,8 @@ namespace APAParvoScheduleApp
 
         private void updateScheduleButton_Click(object sender, RoutedEventArgs e)
         {
-
+            updateCompleteNotifier = new Notifier("Schedule Updated", DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToShortTimeString());
+            updateCompleteNotifier.Show();
         }
 
         private void weekListComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -144,16 +148,7 @@ namespace APAParvoScheduleApp
         
         private void instructionsButton_Click(object sender, RoutedEventArgs e)
         {
-            instructionsPopup = new Popup();
-            instructionsPopup.VerticalOffset = 50;
-            instructionsPopup.HorizontalOffset = 50;
-            instructionsPopup.IsOpen = true;
-            Grid childGrid = new Grid();
-            childGrid.RowDefinitions.Add(new RowDefinition());
-            childGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            childGrid.Width = 100;
-            childGrid.Height = 100;
-            instructionsPopup.Child = childGrid;
+            instructions.Show();
         }
     }
 }

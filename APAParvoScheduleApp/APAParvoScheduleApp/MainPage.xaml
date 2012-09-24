@@ -64,7 +64,7 @@
                     </Grid>
                 </Border>
                 <sdk:Label Height="40" HorizontalAlignment="Left" Margin="32,6,0,0" Name="titleLabel" VerticalAlignment="Top" Width="620" FontSize="32" Content="APA Parvo Schedule" Background="{x:Null}" />
-                <ComboBox Height="25" HorizontalAlignment="Left" Margin="446,243,0,0" Name="weekListComboBox" VerticalAlignment="Top" Width="185" MaxDropDownHeight="100" />
+                <ComboBox Height="25" HorizontalAlignment="Left" Margin="446,243,0,0" Name="weekListComboBox" VerticalAlignment="Top" Width="185" MaxDropDownHeight="100" AllowDrop="False" />
                 <sdk:Label Height="16" HorizontalAlignment="Left" Margin="446,274,0,0" Name="todaysDateLabel" VerticalAlignment="Top" Width="156" Content="Todays Date is 09/13/2012" />
                 <Button Content="Update Schedule Preferences" Height="35" HorizontalAlignment="Left" Margin="32,255,0,0" Name="updateScheduleButton" VerticalAlignment="Top" Width="179" />
                 <Button Content="Instructions" Height="24" HorizontalAlignment="Left" Margin="552,365,0,0" Name="instructionsButton" VerticalAlignment="Top" Width="137" Background="#001F3B53" />
